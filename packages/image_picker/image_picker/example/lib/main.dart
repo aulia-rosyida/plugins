@@ -47,9 +47,6 @@ class _MyHomePageState extends State<MyHomePage> {
   String? _retrieveDataError;
 
   final ImagePicker _picker = ImagePicker();
-  final TextEditingController maxWidthController = TextEditingController();
-  final TextEditingController maxHeightController = TextEditingController();
-  final TextEditingController qualityController = TextEditingController();
 
   void _onImageButtonPressed(ImageSource source,
       {BuildContext? context}) async {
@@ -77,9 +74,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void dispose() {
-    maxWidthController.dispose();
-    maxHeightController.dispose();
-    qualityController.dispose();
     super.dispose();
   }
 
