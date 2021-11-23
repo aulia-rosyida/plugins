@@ -22,23 +22,28 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final LocalAuthentication auth = LocalAuthentication();
   _SupportState _supportState = _SupportState.unknown;
-  bool? _canCheckBiometrics;
-  List<BiometricType>? _availableBiometrics;
+  bool _canCheckBiometrics;
+  List<BiometricType> _availableBiometrics;
   String _authorized = 'Not Authorized';
   bool _isAuthenticating = false;
 
   @override
   void initState() {
     super.initState();
-    auth.isDeviceSupported().then(
-          (isSupported) => setState(() => _supportState = isSupported
-              ? _SupportState.supported
-              : _SupportState.unsupported),
-        );
+    auth.canCheckBiometrics.then(
+      (isSupported) => setState(() => _supportState =
+          isSupported ? _SupportState.supported : _SupportState.unsupported),
+    );
+    // auth.
+    // .isDeviceSupported().then(
+    //       (isSupported) => setState(() => _supportState = isSupported
+    //           ? _SupportState.supported
+    //           : _SupportState.unsupported),
+    //     );
   }
 
   Future<void> _checkBiometrics() async {
-    late bool canCheckBiometrics;
+    bool canCheckBiometrics;
     try {
       canCheckBiometrics = await auth.canCheckBiometrics;
     } on PlatformException catch (e) {
@@ -53,7 +58,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _getAvailableBiometrics() async {
-    late List<BiometricType> availableBiometrics;
+    List<BiometricType> availableBiometrics;
     try {
       availableBiometrics = await auth.getAvailableBiometrics();
     } on PlatformException catch (e) {
@@ -67,33 +72,34 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  Future<void> _authenticate() async {
-    bool authenticated = false;
-    try {
-      setState(() {
-        _isAuthenticating = true;
-        _authorized = 'Authenticating';
-      });
-      authenticated = await auth.authenticate(
-          localizedReason: 'Let OS determine authentication method',
-          useErrorDialogs: true,
-          stickyAuth: true);
-      setState(() {
-        _isAuthenticating = false;
-      });
-    } on PlatformException catch (e) {
-      print(e);
-      setState(() {
-        _isAuthenticating = false;
-        _authorized = "Error - ${e.message}";
-      });
-      return;
-    }
-    if (!mounted) return;
+  // Future<void> _authenticate() async {
+  //   bool authenticated = false;
+  //   try {
+  //     setState(() {
+  //       _isAuthenticating = true;
+  //       _authorized = 'Authenticating';
+  //     });
 
-    setState(
-        () => _authorized = authenticated ? 'Authorized' : 'Not Authorized');
-  }
+  //     auth.authenticate(
+  //         localizedReason: 'Let OS determine authentication method',
+  //         useErrorDialogs: true,
+  //         stickyAuth: true);
+  //     setState(() {
+  //       _isAuthenticating = false;
+  //     });
+  //   } on PlatformException catch (e) {
+  //     print(e);
+  //     setState(() {
+  //       _isAuthenticating = false;
+  //       _authorized = "Error - ${e.message}";
+  //     });
+  //     return;
+  //   }
+  //   if (!mounted) return;
+
+  //   setState(
+  //       () => _authorized = authenticated ? 'Authorized' : 'Not Authorized');
+  // }
 
   Future<void> _authenticateWithBiometrics() async {
     bool authenticated = false;
@@ -102,12 +108,19 @@ class _MyAppState extends State<MyApp> {
         _isAuthenticating = true;
         _authorized = 'Authenticating';
       });
-      authenticated = await auth.authenticate(
-          localizedReason:
-              'Scan your fingerprint (or face or whatever) to authenticate',
-          useErrorDialogs: true,
-          stickyAuth: true,
-          biometricOnly: true);
+      authenticated = await auth.authenticateWithBiometrics(
+        localizedReason:
+            'Scan your fingerprint (or face or whatever) to authenticate',
+        useErrorDialogs: true,
+        stickyAuth: true,
+      );
+
+      // await auth.authenticate(
+      //     localizedReason:
+      //         'Scan your fingerprint (or face or whatever) to authenticate',
+      //     useErrorDialogs: true,
+      //     stickyAuth: true,
+      //     biometricOnly: true);
       setState(() {
         _isAuthenticating = false;
         _authorized = 'Authenticating';
@@ -179,16 +192,16 @@ class _MyAppState extends State<MyApp> {
                       )
                     : Column(
                         children: [
-                          ElevatedButton(
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text('Authenticate'),
-                                Icon(Icons.perm_device_information),
-                              ],
-                            ),
-                            onPressed: _authenticate,
-                          ),
+                          // ElevatedButton(
+                          //   child: Row(
+                          //     mainAxisSize: MainAxisSize.min,
+                          //     children: [
+                          //       Text('Authenticate'),
+                          //       Icon(Icons.perm_device_information),
+                          //     ],
+                          //   ),
+                          //   onPressed: _authenticate,
+                          // ),
                           ElevatedButton(
                             child: Row(
                               mainAxisSize: MainAxisSize.min,

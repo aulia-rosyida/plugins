@@ -50,6 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _onImageButtonPressed(ImageSource source,
       {BuildContext? context}) async {
+    print("masuk on image btn pressed");
     try {
       final pickedFile = await _picker.pickImage(
         source: source,
@@ -59,6 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
       );
       setState(() {
         _imageFile = pickedFile;
+        print("di SET ke _imageFile: ${pickedFile?.path}");
       });
     } catch (e) {
       setState(() {
@@ -69,6 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void deactivate() {
+    print("");
     super.deactivate();
   }
 
